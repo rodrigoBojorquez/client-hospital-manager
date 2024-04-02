@@ -1,20 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { useAppStore } from './src/stores/appStore';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+// STACKS AND TABS
+import PatientTabs from './src/tabs/PatientTabs';
+import DoctorTabs from './src/tabs/DoctorTabs';
+import DevTabs from './src/tabs/DevTabs';
+import AuthStack from './src/stacks/AuthStack';
+
+const roleBasedTabs = {
+  patient: PatientTabs,
+  doctor: DoctorTabs,
+  developer: DevTabs
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+
+  const profileData = useAppStore(state => state.profileData);
+
+  const NavigationComponent = profileData.auth ? roleBasedTabs[profileData.role] : AuthStack
+
+  return (
+    <NavigationContainer>
+      <NavigationComponent />      
+    </NavigationContainer>
+  );
+}
