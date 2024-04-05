@@ -1,16 +1,58 @@
 import { useState } from 'react';
-import { View, Text, Button, SafeAreaView, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, Button, SafeAreaView, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import React from 'react'
+import { axiosClient } from '../../../../axiosClient';
+import { useAppStore } from '../../../stores/appStore';
+import qs from "qs"
+import * as SecureStore from "expo-secure-store"
 
 const Login = ({ navigation, route }) => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const authUser = useAppStore(state => state.authUser);
+    const profileData = useAppStore(state => state.profileData)
+    console.log(profileData)
 
-    const handleLogin = e => {
-        e.preventDefault();
-        console.log("eso tilin");
-    }
+    const handleLogin = async () => {
+      const data = qs.stringify({
+        username: username,
+        password: password
+      });
+    
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      };
+    
+      try {
+        const res = await axiosClient.post("/public/token", data, config);
+    
+        const accessToken = res.data.access_token;
+        const secondConfig = {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        };
+    
+        if (accessToken !== null) {
+          await SecureStore.setItemAsync("AppToken", accessToken);
+    
+          const userRes = await axiosClient.get("/user/me", secondConfig);
+        
+          authUser({
+            userName: userRes.data.username,
+            role: userRes.data.rol,
+            token: accessToken
+          });
+
+        }
+      } catch (error) {
+        console.log(error);
+        Alert.alert("Oops!", error.response.data.detail ?? "Error al iniciar sesión");
+      }
+    };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: "#64CCC5"}}>
@@ -43,7 +85,6 @@ const Login = ({ navigation, route }) => {
                 <Text style={styles.signupText}>¿Todavía no tienes cuenta?</Text>
 
                 <View 
-                    // style={{flexDirection: "row", justifyContent: "space-between"}}
                     style={{alignItems: "center", gap: 20, marginTop: 10}}
                 >
                     <TouchableOpacity onPress={

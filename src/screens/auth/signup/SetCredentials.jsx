@@ -2,6 +2,9 @@ import { View, Text, Button, SafeAreaView, TextInput, TouchableOpacity, StyleShe
 import { useState } from 'react';
 import React from 'react'
 
+// COMPONENTS
+import GoBackButton from '../../../components/GoBackButton';
+
 const SetCredentials = ({ navigation, route }) => {
 
   const [firstName, setFirstName] = useState('');
@@ -23,7 +26,11 @@ const SetCredentials = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#64CCC5" }}>
         <View style={styles.container}>
-            <Text style={styles.logo}>Crear Cuenta</Text>
+            <GoBackButton 
+              onPress={() => navigation.goBack()}
+            />
+
+            <Text style={styles.logo}>Crea tu cuenta</Text>
             <View style={styles.inputView}>
                 <TextInput
                     style={styles.inputText}
@@ -64,11 +71,6 @@ const SetCredentials = ({ navigation, route }) => {
             <TouchableOpacity style={styles.signupBtn} onPress={nextScreen}>
                 <Text style={styles.signupText}>Siguiente</Text>
             </TouchableOpacity>
-
-
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text>Volver</Text>
-            </TouchableOpacity>
         </View>
     </SafeAreaView>
   )
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
   },
   logo: {
       fontWeight: 'bold',
-      fontSize: 50,
+      fontSize: 40,
       color: '#64CCC5',
       marginBottom: 40,
   },

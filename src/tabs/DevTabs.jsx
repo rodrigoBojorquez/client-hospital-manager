@@ -1,11 +1,19 @@
 import { View, Text } from 'react-native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import React from 'react'
+
+// SCREENS
+import HomeAdmin from "../screens/admin/HomeAdmin"
+
+const Tab = createBottomTabNavigator();
 
 const DevTabs = () => {
   return (
-    <View>
-      <Text>DevTabs</Text>
-    </View>
+    <Tab.Navigator
+      initialRouteName='Home'
+    >
+      <Tab.Screen name='Home' component={HomeAdmin} />
+    </Tab.Navigator>
   )
 }
 
