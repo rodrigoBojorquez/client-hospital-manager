@@ -3,7 +3,8 @@ export const profileSlice = (set) => ({
         userName: "",
         role: "",
         auth: false,
-        token: ""
+        token: "",
+        id: ""
     },
     authUser: (payload) => set((state) => ({
         profileData: {
@@ -13,6 +14,7 @@ export const profileSlice = (set) => ({
             role: payload.role ?? state.profileData.role,
             auth: true,
             token: payload.token ?? state.profileData.token,
+            id: payload.id ?? state.profileData.id,
         }
     })),
     logOut: () => set(() => ({
@@ -20,7 +22,8 @@ export const profileSlice = (set) => ({
             userName: "",
             role: "",
             auth: false,
-            token: ""
+            token: "",
+            id: "",
         }    
     })),
 })

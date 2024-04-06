@@ -40,11 +40,14 @@ const Login = ({ navigation, route }) => {
           await SecureStore.setItemAsync("AppToken", accessToken);
     
           const userRes = await axiosClient.get("/user/me", secondConfig);
+
+          console.log(userRes);
         
           authUser({
             userName: userRes.data.username,
             role: userRes.data.rol,
-            token: accessToken
+            token: accessToken,
+            id: userRes.data._id
           });
 
         }

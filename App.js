@@ -33,6 +33,7 @@ export default function App() {
             userName: userRes.data.username,
             role: userRes.data.rol,
             token: accessToken,
+            id: userRes.data._id
           });
         }
       
