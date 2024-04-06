@@ -1,6 +1,7 @@
 import { View, Text, SafeAreaView, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useState } from 'react'
 import GoBackButton from '../../../components/GoBackButton';
+import { useAppStore } from '../../../stores/appStore';
 
 const SetDoctorData = ({ navigation }) => {
 
@@ -11,8 +12,20 @@ const SetDoctorData = ({ navigation }) => {
   const [clinicAddress, setClinicAddress] = useState('');
   const [clinicCity, setClinicCity] = useState('');
 
-  const handleSubmit = () => {
+  const setDoctorData = useAppStore(store => store.setDoctorData);
 
+  const handleSubmit = () => {
+    setDoctorData({
+        speciality: specialization,
+        contactNumber: contactNumber,
+        licenseNumber: licenseNumber,
+        clinic: {
+            name: clinicName,
+            address: clinicAddress,
+            city: clinicCity
+        }
+    });
+    navigation.navigate("SetDoctorSchedule")
   };
 
   return (
@@ -78,7 +91,7 @@ const SetDoctorData = ({ navigation }) => {
                     value={clinicCity}
                 />
             </View>
-            <TouchableOpacity style={styles.submitBtn} onPress={() => navigation.navigate("SetDoctorSchedule")}>
+            <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
                 <Text style={styles.submitText}>Siguiente</Text>
             </TouchableOpacity>
         </View>

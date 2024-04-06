@@ -9,7 +9,7 @@ export const authSlice = (set) => ({
         finishWork: "",
         workDays: [],
         contactNumber: "",
-        licenceNumber: "",
+        licenseNumber: "",
         clinic: {
             name: "",
             address: "",
@@ -39,7 +39,7 @@ export const authSlice = (set) => ({
             finishWork: payload.finishWork ?? state.doctorData.finishWork,
             workDays: payload.workDays ?? state.doctorData.workDays,
             contactNumber: payload.contactNumber ?? state.doctorData.contactNumber,
-            licenceNumber: payload.licenceNumber ?? state.doctorData.licenceNumber,
+            licenseNumber: payload.licenseNumber ?? state.doctorData.licenseNumber,
             clinic: {
               name: payload.clinic?.name ?? state.doctorData.clinic.name,
               address: payload.clinic?.address ?? state.doctorData.clinic.address,

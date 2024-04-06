@@ -2,14 +2,18 @@ import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, SafeAr
 import { useState } from 'react'
 import GoBackButton from '../../../components/GoBackButton';
 import DualTimePicker from '../../../components/DualTimePicker';
+import { useAppStore } from '../../../stores/appStore';
+import { axiosClient } from "../../../../axiosClient"
 
 const SetDoctorSchedule = ({ navigation }) => {
 
   const [selectedDays, setSelectedDays] = useState([]);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+  const setDoctorData = useAppStore(state => state.setDoctorData);
+  const doctorData = useAppStore(state => state.doctorData);
 
-  const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+  const daysOfWeek = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
   const toggleDay = day => {
     if (selectedDays.includes(day)) {
@@ -19,7 +23,7 @@ const SetDoctorSchedule = ({ navigation }) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const startHours = startTime.getHours();
     const startMinutes = startTime.getMinutes();
     const endHours = endTime.getHours();
@@ -32,7 +36,44 @@ const SetDoctorSchedule = ({ navigation }) => {
       Alert.alert("Error", "Horario inválido");
     } 
     else {
+      try {
+        const starkWorkParsed = startTime.toISOString().split("T")[1];
+        const finishWorkParsed = endTime.toISOString().split("T")[1];
 
+        console.log(starkWorkParsed, finishWorkParsed);
+
+        setDoctorData({
+          startWork: starkWorkParsed,
+          finishWork: finishWorkParsed,
+          workDays: selectedDays
+        })
+
+
+        const response = await axiosClient.post("/public/doctor", {
+          username: doctorData.userName,
+          lastname: doctorData.lastName,
+          email: doctorData.email,
+          password: doctorData.password,
+          rol: "doctor",
+          speciality: doctorData.speciality,
+          start_work: doctorData.startWork,
+          finish_work: doctorData.finishWork,
+          work_days: doctorData.workDays,
+          contact_number: doctorData.contactNumber,
+          license_number: doctorData.licenseNumber,
+          clinic: doctorData.clinic,
+        })
+
+        Alert.alert("Genial!", response.data.message ?? "Te cuenta ha sido creada con éxito");
+        console.log(doctorData);
+
+        setTimeout(() => {
+          navigation.navigate("Login");
+        }, 1000);
+      } catch (err) {
+        console.log(err);
+        Alert.alert("Oops!", "Hubo un error al crear tu cuenta");
+      }
     }
   }
 
