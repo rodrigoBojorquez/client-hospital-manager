@@ -17,6 +17,7 @@ const PatientTabs = () => {
       // TABS ICONS 
 
       screenOptions={({ route }) => ({
+        headerRight: (props) => <LogOutButton />,
         tabBarIcon: ({ foucused, color, size }) => {
           let iconName;
 
