@@ -9,9 +9,12 @@ export default function EditarExp() {
     const [work, setWork] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
+    const profileData = useAppStore(state => state.profileData);
+
 
     const handleGuardar = async () => {
         try {
+            const doctorId = profileData.id;
             const data = {
                 clinic: clinic,
                 work: work,

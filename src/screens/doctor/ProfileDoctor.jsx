@@ -1,60 +1,90 @@
-import React from 'react';
-import { View, ScrollView, Image, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+import tw from 'twrnc';
+import { useAppStore } from '../../stores/appStore';
+import { axiosClient } from "../../../axiosClient";
 
-const PerfilDoctor = () => {
+export default function ProfileDoctor({ name }) {
+    const [userInfo, setUserInfo] = useState(null);
+    const [showInfoPersonal, setShowInfoPersonal] = useState(false);
+    const [showContacto, setShowContacto] = useState(false);
+
+    const profileData = useAppStore(state => state.profileData);
+
+    useEffect(() => {
+        obtenerInformacionUsuario();
+    }, []);
+
+    async function obtenerInformacionUsuario() {
+        try {
+            const token = profileData.token;
+
+            if (!token) {
+                throw new Error('Token de autenticación no encontrado');
+            }
+
+            const response = await axiosClient.get('/user/me', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            console.log('Información del usuario:', response.data);
+
+            // Actualizar el estado solo si el componente está montado
+            if (response.status === 200) {
+                setUserInfo(response.data);
+            } else {
+                throw new Error('Error al obtener información del usuario');
+            }
+        } catch (error) {
+            console.error('Error al obtener información del usuario:', error);
+            Alert.alert('Error', 'No se pudo obtener la información del usuario.');
+        }
+    }
+
     return (
-        <ScrollView style={{ marginBottom: 5 }}>
-            <View className="flex-1 bg-white h-screen flex items-center mt-10 pt-5">
-                <View className="w-5/6 flex-row items-center justify-center">
-                    <Image source={require('../../assets/Doctor.png')} className="w-32 h-32 mb-5" />
-                    <View className="ml-3">
-                        <Text className="text-2xl font-bold mb-2">Dr. Juan Perez Ⓒ</Text>
-                        <Text className="text-lg font-bold text-[#11AEBD] mb-2">Dentista</Text>
-                        <Text className="text-base text-[#11AEBD]">Especialista En Odontologia</Text>
-                        <Text className="text-base text-[#11AEBD] mb-5">General Y Endodoncia</Text>
-                    </View>
-                </View>
-                <View className="mb-5">
-                    <Text className="text-lg font-bold mb-2">Acerca de</Text>
-                    <Text className="text-base">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut diam quam, semper iaculis condimentum ac, vestibulum eu nisl.
-                    </Text>
-                </View>
-                <View className="mb-5">
-                    <Text className="text-lg font-bold mb-2">Educación</Text>
-                    <View className="w-5/6 flex-row items-center justify-center">
-                        <Image source={require('../../assets/UADY.jpeg')} className="w-16 h-16 mr-3" />
-                        <View>
-                            <Text className="text-base">Universidad Autonoma de Yucatan Medico-Especialidad Odontologia</Text>
-                            <Text className="text-base">2022-2026</Text>
-                        </View>
-                    </View>
-                </View>
-                <View className="mb-5">
-                    <Text className="text-lg font-bold mb-2">Consultorio</Text>
-                    <View className="w-5/6 flex-row items-center justify-center">
-                        <Image source={require('../../assets/UMF.png')} className="w-14 h-14 mr-3" />
-                        <View>
-                            <Text className="text-base">Unidad Medica Familiar No.16 IMSS.</Text>
-                            <Text className="text-base">Av. Nichupte esq Luciernafa 51, 77533 Cancún, Q.R.</Text>
-                        </View>
-                    </View>
-                </View>
-                <View className="mb-5">
-                    <Text className="text-lg font-bold mb-2">Experiencia</Text>
-                    <View className="w-5/6 flex-row items-center justify-center">
-                        <Image source={require('../../assets/MediDent.jpg')} className="w-16 h-16 mr-3" />
-                        <View>
-                            <Text className="text-base">CDental</Text>
-                            <Text className="text-base">Medico- Especialidad Endodoncia</Text>
-                            <Text className="text-base">2022-2026</Text>
-                        </View>
-                    </View>               
-                     <Text className=" text-center bg-[#1178BD] text-white text-2xl  rounded-2xl  font-semibold mt-4  p-2">Agendar Cita</Text>
-                </View>
-            </View>                
-        </ScrollView>
-    );
-};
+        <View style={tw`flex-1 bg-white`}>
+            {/* Contenedor para la imagen y el texto */}
+            <View style={tw`items-center justify-center mt-8 mb-4`}>
+                <FontAwesome name="user-circle-o" size={100} color="black" />
+                <Text style={tw`text-2xl font-bold mt-4`}>{userInfo ? userInfo.username : 'Nombre de Usuario'}</Text>
+            </View>
 
-export default PerfilDoctor;
+            {/* Acerca de mí */}
+            <View style={tw`mb-8`}>
+                <Text style={tw`text-xl font-bold mb-3 bg-[#E9E9E9] px-4 w-full py-1 rounded-md mb-2`}>Acerca de mí</Text>
+                <TouchableOpacity onPress={() => setShowInfoPersonal(!showInfoPersonal)}>
+                    <View style={tw`flex px-4 flex-row justify-between`}>
+                        <Text style={tw`text-lg my-1`}>Información Personal</Text>
+                        <MaterialIcons name={showInfoPersonal ? 'expand-less' : 'expand-more'} size={24} color="black" />
+                    </View>
+                </TouchableOpacity>
+                {showInfoPersonal && userInfo && (
+                    <View style={tw`flex px-4 flex row justify-between`}>
+                    {/* Display user information */}
+                    <Text style={tw`text-base text-[#6e6e6e]`}>{userInfo.username}</Text>
+                        <Text style={tw`text-base text-[#6e6e6e]`}>{userInfo.email}</Text>
+                        {/* Add other user information as needed */}
+                    </View>
+                )}
+                <TouchableOpacity onPress={() => setShowContacto(!showContacto)}>
+                    <View style={tw`flex px-4 flex-row justify-between`}>
+                        <Text style={tw`text-lg my-1`}>Contacto</Text>
+                        <MaterialIcons name={showContacto ? 'expand-less' : 'expand-more'} size={24} color="black" />
+                    </View>
+                </TouchableOpacity>
+                {showContacto && userInfo && (
+                    <View style={tw`flex px-4 flex row justify-between`}>
+                    {/* Display contact details */}
+                        <Text style={tw`text-base text-[#6e6e6e]`}>{userInfo.contact_number}</Text>
+                        <Text style={tw`text-base text-[#6e6e6e]`}>{userInfo.address}</Text>
+                        {/* Add other contact details as needed */}
+                    </View>
+                )}
+            </View>
+        </View>
+    );
+}

@@ -5,6 +5,9 @@ import LogOutButton from '../components/LogOutButton';
 
 //SCREENS
 import HomeDoctor from "../screens/doctor/HomeDoctor";
+import Appointments from '../screens/doctor/Appointments';
+import ProfileDoctor from '../screens/doctor/ProfileDoctor';
+import DoctorSettingsStack from '../stacks/DoctorSettingsStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,6 +20,10 @@ const DoctorTabs = () => {
       }}
     >
       <Tab.Screen name='Home' component={HomeDoctor} />
+      <Tab.Screen name='Citas' component={Appointments} />
+      <Tab.Screen name='Configuracion' component={DoctorSettingsStack} />
+
+
 
       {/* MAS TABS AQUI */}
     </Tab.Navigator>

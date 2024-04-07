@@ -9,9 +9,12 @@ export default function EditarTitulo() {
     const [speciality, setSpeciality] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
+    const profileData = useAppStore(state => state.profileData);
+
 
     const handleGuardar = async () => {
         try {
+            const doctorId = profileData.id;
             const data = {
                 university: university,
                 speciality: speciality,

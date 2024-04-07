@@ -10,17 +10,6 @@ const Appointments = () => {
 
   const profileData = useAppStore((store) => store.profileData);
 
-  const deleteAppoint = async (id) => {
-    try {
-      const response = await axiosClient.delete(`/appointment/${id}`)
-      const newAppointments = appointments.filter((appoint) => appoint._id !== id);
-      setAppointments(newAppointments);
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-      Alert.alert("Oops!", "Hubo un error al eliminar la cita");
-    }
-  }
  
   useEffect(() => {
     const getAppointments = async () => {
@@ -51,7 +40,7 @@ const Appointments = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Mis Citas</Text>
+      <Text style={styles.title}>Citas Agendadas</Text>
       <FlatList
         data={appointments}
         renderItem={renderAppointment}
