@@ -1,17 +1,33 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import rodri from "../../../assets/rodri.png"
 import Icon from "react-native-vector-icons/Fontisto";
 import DoctorIcon from "../../../assets/images/caduceo.png";
+import { axiosClient } from '../../../axiosClient';
+
 
 // COMPONENTS
 import Appointment from "./components/appoiments.jsx";
 
+
 const HomeDoctor = () => {
-  const profileInfo = {
-    username: "Rodrigo",
-    lastname: "Bojorquez",
-  };
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const getDataUser = async () => {
+      try {
+        const response = await axiosClient.get(`/user/me`)
+        console.log(response)
+        setData(response.data.response ?? []);
+      } catch (err) {
+        console.log(err);
+        Alert.alert("Oops!", "Hubo un error al obtener información");
+      }
+    }
+    getDataUser()
+  }, [])
+
 
   const menusInfo = {
     left: "Sin asignar",
@@ -35,106 +51,106 @@ const HomeDoctor = () => {
   ];
 
   return (
-    <ScrollView contentContainerStyle={{flexGrow:1, justifyContent: "space-between"}} showsVerticalScrollIndicator={false}>
-    <View
-      style={{
-        paddingVertical: 25,
-        paddingHorizontal: 15,
-        flex: 1,
-        backgroundColor: "white",
-      }}
-    >
+    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "space-between" }} showsVerticalScrollIndicator={false}>
       <View
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
+          paddingVertical: 25,
+          paddingHorizontal: 15,
+          flex: 1,
+          backgroundColor: "white",
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image source={rodri} style={{ height: 70, width: 70 }} />
-          <View style={{ marginLeft: 10 }}>
-            <Text style={{ color: "#858585", fontSize: 20, marginBottom: 5 }}>
-              Bienvenido, Dr
-            </Text>
-            <Text style={{ fontSize: 23, fontWeight: 550 }}>
-              {profileInfo.username} {profileInfo.lastname}
-            </Text>
-          </View>
-        </View>
-
-        <TouchableOpacity>
-          <Icon name="bell" size={30} color="black" />
-        </TouchableOpacity>
-      </View>
-
-      <Text
-        style={{
-          color: "#11AEBD",
-          fontSize: 25,
-          fontWeight: 550,
-          marginTop: 30,
-        }}
-      >
-        Cita del día
-      </Text>
-
-      {/* GRID DE HOME */}
-      <View style={{ marginTop: 20 }}>
         <View
           style={{
-            backgroundColor: "#11BD92",
-            borderRadius: 10,
-            color: "white",
-            alignItems: "center",
-            justifyContent: "space-around",
-            padding: 20,
-            flexDirection: "row"
-          }}
-        >
-          <Text style={{width: "60%", color: "white", fontSize: 17, fontWeight: 600}}>
-            La medicina es el arte de acompañar a lar personas en su camino
-            hacia la salud
-          </Text>
-          <Image
-            source={DoctorIcon}
-            style={{ height: 100, width: 100, tintColor: "black" }}
-          />
-        </View>
-        <View
-          style={{
-            marginTop: 10,
             flexDirection: "row",
-            gap: 15,
-            width: "100%",
+            alignItems: "center",
             justifyContent: "space-between",
           }}
         >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Image source={rodri} style={{ height: 70, width: 70 }} />
+            <View style={{ marginLeft: 10 }}>
+              <Text style={{ color: "#858585", fontSize: 20, marginBottom: 5 }}>
+                Bienvenido, Dr
+              </Text>
+              <Text style={{ fontSize: 23, fontWeight: 550 }}>
+                {getDataUser.username} {getDataUser.lastname}
+              </Text>
+            </View>
+          </View>
+
+          <TouchableOpacity>
+            <Icon name="bell" size={30} color="black" />
+          </TouchableOpacity>
+        </View>
+
+        <Text
+          style={{
+            color: "#11AEBD",
+            fontSize: 25,
+            fontWeight: 550,
+            marginTop: 30,
+          }}
+        >
+          Cita del día
+        </Text>
+
+        {/* GRID DE HOME */}
+        <View style={{ marginTop: 20 }}>
           <View
-            style={{ flex: 1, backgroundColor: "#4EACEC", borderRadius: 10, height: 130, justifyContent: "center", alignItems: "center" }}
+            style={{
+              backgroundColor: "#11BD92",
+              borderRadius: 10,
+              color: "white",
+              alignItems: "center",
+              justifyContent: "space-around",
+              padding: 20,
+              flexDirection: "row"
+            }}
           >
-            <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
-              {menusInfo.left}
+            <Text style={{ width: "60%", color: "white", fontSize: 17, fontWeight: 600 }}>
+              La medicina es el arte de acompañar a lar personas en su camino
+              hacia la salud
             </Text>
+            <Image
+              source={DoctorIcon}
+              style={{ height: 100, width: 100, tintColor: "black" }}
+            />
           </View>
           <View
-            style={{ flex: 1, backgroundColor: "#70D7BD", borderRadius: 10, justifyContent: "center", alignItems: "center" }}
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              gap: 15,
+              width: "100%",
+              justifyContent: "space-between",
+            }}
           >
-            <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
+            <View
+              style={{ flex: 1, backgroundColor: "#4EACEC", borderRadius: 10, height: 130, justifyContent: "center", alignItems: "center" }}
+            >
+              <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
+                {menusInfo.left}
+              </Text>
+            </View>
+            <View
+              style={{ flex: 1, backgroundColor: "#70D7BD", borderRadius: 10, justifyContent: "center", alignItems: "center" }}
+            >
+              <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
                 {menusInfo.right}
-            </Text>
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      <Text style={{marginTop: 30, color: "#11AEBD", fontWeight: 500, fontSize: 25}}>Próximas citas</Text>
+        <Text style={{ marginTop: 30, color: "#11AEBD", fontWeight: 500, fontSize: 25 }}>Próximas citas</Text>
 
-      <View style={{marginTop: 15}}>
-        {nextAppointments?.map((appoinment) => (
-          <Appointment data={appoinment} key={appoinment.id} />
-        ))}
+        <View style={{ marginTop: 15 }}>
+          {nextAppointments?.map((appoinment) => (
+            <Appointment data={appoinment} key={appoinment.id} />
+          ))}
+        </View>
       </View>
-    </View>
     </ScrollView>
   );
 };
