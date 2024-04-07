@@ -9,5 +9,5 @@ export const axiosClient = axios.create({
    // baseURL: "http://10.0.1.32:8000/",
     // ALEXIS
     baseURL: "http://192.168.1.68:8000/",
-    timeout: 2000
+    timeout: 5000
 })
