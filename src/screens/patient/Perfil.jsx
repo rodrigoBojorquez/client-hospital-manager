@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import tw from 'twrnc';
-import axios from 'axios';
 import { useAppStore } from '../../stores/appStore';
+import { axiosClient } from "../../../axiosClient";
 
 export default function Perfil({ name }) {
     const [userInfo, setUserInfo] = useState(null);
@@ -25,7 +25,7 @@ export default function Perfil({ name }) {
                 throw new Error('Token de autenticación no encontrado');
             }
 
-            const response = await axios.get('/user/me', {
+            const response = await axiosClient.get('/user/me', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -48,9 +48,9 @@ export default function Perfil({ name }) {
     return (
         <View style={tw`flex-1 bg-white`}>
             {/* Contenedor para la imagen y el texto */}
-            <View style={tw`items-center justify-center mt-8 mb-8`}>
+            <View style={tw`items-center justify-center mt-8 mb-4`}>
                 <FontAwesome name="user-circle-o" size={100} color="black" />
-                <Text style={tw`text-2xl font-bold`}>{userInfo ? userInfo.username : 'Nombre de Usuario'}</Text>
+                <Text style={tw`text-2xl font-bold mt-4`}>{userInfo ? userInfo.username : 'Nombre de Usuario'}</Text>
             </View>
 
             {/* Acerca de mí */}
@@ -63,10 +63,10 @@ export default function Perfil({ name }) {
                     </View>
                 </TouchableOpacity>
                 {showInfoPersonal && userInfo && (
-                    <View>
-                        {/* Display user information */}
-                        <Text>{userInfo.username}</Text>
-                        <Text>{userInfo.email}</Text>
+                    <View style={tw`flex px-4 flex row justify-between`}>
+                    {/* Display user information */}
+                    <Text style={tw`text-base text-[#6e6e6e]`}>{userInfo.username}</Text>
+                        <Text style={tw`text-base text-[#6e6e6e]`}>{userInfo.email}</Text>
                         {/* Add other user information as needed */}
                     </View>
                 )}
@@ -77,10 +77,10 @@ export default function Perfil({ name }) {
                     </View>
                 </TouchableOpacity>
                 {showContacto && userInfo && (
-                    <View>
-                        {/* Display contact details */}
-                        <Text>{userInfo.contact_number}</Text>
-                        <Text>{userInfo.address}</Text>
+                    <View style={tw`flex px-4 flex row justify-between`}>
+                    {/* Display contact details */}
+                        <Text style={tw`text-base text-[#6e6e6e]`}>{userInfo.contact_number}</Text>
+                        <Text style={tw`text-base text-[#6e6e6e]`}>{userInfo.address}</Text>
                         {/* Add other contact details as needed */}
                     </View>
                 )}

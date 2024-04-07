@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import tw from 'twrnc';
 import GoBackButton from '../../components/GoBackButton';
 import { axiosClient } from '../../../axiosClient';
 
@@ -8,26 +9,24 @@ const CreateAppoint = ({ navigation, route }) => {
   const [comment, setComment] = useState('');
 
   const handleAppointmentCreation = async () => {
-
     try {
-        const data = {
-            patient_id: patientId,
-            doctor_id: doctorInfo.doctorId,
-            date: hourAppoint,
-            commentary: comment
-        }
-        const response = await axiosClient.post(`/appointment/`, data)
+      const data = {
+        patient_id: patientId,
+        doctor_id: doctorInfo.doctorId,
+        date: hourAppoint,
+        commentary: comment
+      };
+      const response = await axiosClient.post(`/appointment/`, data);
 
-        Alert.alert("Genial!", response.data.message ?? "Cita agregada con éxito")
+      Alert.alert("¡Genial!", response.data.message ?? "Cita agregada con éxito");
 
-        setTimeout(() => {
-            navigation.navigate("Appointments")
-        }, 2000)
+      navigation.navigate("CitaAgendada");
 
-        console.log(response);
+      console.log(response);
     } catch (err) {
-        console.log(err);
-        Alert.alert("Oops!", "Hubo un error al agendar la cita");
+      console.log(err);
+      Alert.alert("¡Oops!", "Hubo un error al agendar la cita");
+
     }
 
     console.log({
@@ -36,31 +35,29 @@ const CreateAppoint = ({ navigation, route }) => {
       patientId,
       comment,
     });
-
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-
-      <Text>Agendar cita</Text>
+    <ScrollView contentContainerStyle={tw`bg-white h-full p-4`}>
+      <Text style={tw`text-2xl mb-6 font-bold text-center`}>Agendar cita</Text>
     
-      <View style={styles.section}>
-        <Text style={styles.label}>Doctor:</Text>
-        <Text style={styles.text}>{doctorInfo.username}</Text>
+      <View style={tw`mb-6`}>
+        <Text style={tw`text-lg font-bold`}>Doctor:</Text>
+        <Text style={tw`text-lg`}>{doctorInfo.username}</Text>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.label}>Especialidad:</Text>
-        <Text style={styles.text}>{doctorInfo.speciality}</Text>
+      <View style={tw`mb-6`}>
+        <Text style={tw`text-lg font-bold`}>Especialidad:</Text>
+        <Text style={tw`text-lg`}>{doctorInfo.speciality}</Text>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.label}>Hora de la cita:</Text>
-        <Text style={styles.text}>{hourAppoint.split("T")[1]}</Text>
+      <View style={tw`mb-6`}>
+        <Text style={tw`text-lg font-bold`}>Hora de la cita:</Text>
+        <Text style={tw`text-lg`}>{hourAppoint.split("T")[1]}</Text>
       </View>
 
       <TextInput
-        style={styles.input}
+        style={tw`border border-gray-400 p-4 mb-6 rounded-md`}
         onChangeText={setComment}
         value={comment}
         multiline
@@ -68,48 +65,11 @@ const CreateAppoint = ({ navigation, route }) => {
         placeholder="Escribe aquí cualquier comentario para el doctor..."
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleAppointmentCreation}>
-        <Text style={styles.buttonText}>Agendar Cita</Text>
+      <TouchableOpacity style={tw`bg-blue-500 py-4 rounded-md items-center`} onPress={handleAppointmentCreation}>
+        <Text style={tw`text-white font-bold text-lg`}>Agendar Cita</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  label: {
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  text: {
-    fontSize: 16,
-    color: '#333',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 20,
-    borderRadius: 5,
-    textAlignVertical: 'top', // Asegura que el texto comience desde la parte superior en Android
-  },
-  button: {
-    backgroundColor: '#007bff',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});
 
 export default CreateAppoint;
