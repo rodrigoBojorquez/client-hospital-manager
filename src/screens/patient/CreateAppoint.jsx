@@ -1,115 +1,79 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
-import GoBackButton from '../../components/GoBackButton';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import tw from 'twrnc'; // Importa la función tw de twrnc
 import { axiosClient } from '../../../axiosClient';
 
 const CreateAppoint = ({ navigation, route }) => {
-  const { hourAppoint, doctorInfo, patientId } = route.params;
-  const [comment, setComment] = useState('');
+    const { hourAppoint, doctorInfo, patientId } = route.params;
+    const [comment, setComment] = useState('');
 
-  const handleAppointmentCreation = async () => {
+    const handleAppointmentCreation = async () => {
+        try {
+            const data = {
+                patient_id: patientId,
+                doctor_id: doctorInfo.doctorId,
+                date: hourAppoint,
+                commentary: comment
+            }
+            const response = await axiosClient.post(`/appointment/`, data)
 
-    try {
-        const data = {
-            patient_id: patientId,
-            doctor_id: doctorInfo.doctorId,
-            date: hourAppoint,
-            commentary: comment
+            Alert.alert("Genial!", response.data.message ?? "Cita agregada con éxito")
+
+            // Redirigir a la pantalla CitaAgendada
+            navigation.navigate("CitaAgendada");
+
+            console.log(response);
+        } catch (err) {
+            console.log(err);
+            Alert.alert("Oops!", "Hubo un error al agendar la cita");
         }
-        const response = await axiosClient.post(`/appointment/`, data)
 
-        Alert.alert("Genial!", response.data.message ?? "Cita agregada con éxito")
+        console.log({
+            hourAppoint,
+            doctorInfo,
+            patientId,
+            comment,
+        });
+    };
 
-        setTimeout(() => {
-            navigation.navigate("Appointments")
-        }, 2000)
+    return (
+        <ScrollView contentContainerStyle={tw`p-4 bg-gray-100 flex-grow`}>
+            <View style={tw`flex items-center`}>
+                <Text style={tw`text-3xl font-bold text-blue-500 mb-4`}>Agendar cita</Text>
 
-        console.log(response);
-    } catch (err) {
-        console.log(err);
-        Alert.alert("Oops!", "Hubo un error al agendar la cita");
-    }
+                <View style={tw`bg-white rounded-lg shadow-md p-6 w-full mb-4`}>
+                    <View style={tw`mb-4`}>
+                        <Text style={tw`font-bold text-lg mb-2`}>Doctor:</Text>
+                        <Text style={tw`text-lg`}>{doctorInfo.username}</Text>
+                    </View>
+                    <View style={tw`mb-4`}>
+                        <Text style={tw`font-bold text-lg mb-2`}>Especialidad:</Text>
+                        <Text style={tw`text-lg`}>{doctorInfo.speciality}</Text>
+                    </View>
+                    <View style={tw`mb-4`}>
+                        <Text style={tw`font-bold text-lg mb-2`}>Hora de la cita:</Text>
+                        <Text style={tw`text-lg`}>{hourAppoint.split("T")[1]}</Text>
+                    </View>
+                </View>
 
-    console.log({
-      hourAppoint,
-      doctorInfo,
-      patientId,
-      comment,
-    });
+                <TextInput
+                    style={tw`border border-gray-300 rounded-md w-full p-4 mb-4`}
+                    onChangeText={setComment}
+                    value={comment}
+                    multiline
+                    numberOfLines={4}
+                    placeholder="Escribe aquí cualquier comentario para el doctor..."
+                />
 
-  };
-
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-
-      <Text>Agendar cita</Text>
-    
-      <View style={styles.section}>
-        <Text style={styles.label}>Doctor:</Text>
-        <Text style={styles.text}>{doctorInfo.username}</Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.label}>Especialidad:</Text>
-        <Text style={styles.text}>{doctorInfo.speciality}</Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.label}>Hora de la cita:</Text>
-        <Text style={styles.text}>{hourAppoint.split("T")[1]}</Text>
-      </View>
-
-      <TextInput
-        style={styles.input}
-        onChangeText={setComment}
-        value={comment}
-        multiline
-        numberOfLines={4}
-        placeholder="Escribe aquí cualquier comentario para el doctor..."
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleAppointmentCreation}>
-        <Text style={styles.buttonText}>Agendar Cita</Text>
-      </TouchableOpacity>
-    </ScrollView>
-  );
+                <TouchableOpacity
+                    style={tw`bg-blue-500 py-4 rounded-lg w-full items-center`}
+                    onPress={handleAppointmentCreation}
+                >
+                    <Text style={tw`text-white font-bold text-lg`}>Agendar Cita</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
+    );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  label: {
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  text: {
-    fontSize: 16,
-    color: '#333',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 20,
-    borderRadius: 5,
-    textAlignVertical: 'top', // Asegura que el texto comience desde la parte superior en Android
-  },
-  button: {
-    backgroundColor: '#007bff',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});
 
 export default CreateAppoint;
