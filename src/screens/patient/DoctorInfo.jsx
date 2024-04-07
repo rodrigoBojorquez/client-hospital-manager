@@ -1,13 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  Alert,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import {View,Text,StyleSheet,SafeAreaView,ScrollView,Alert,TouchableOpacity,FlatList,} from "react-native";
 import { useState, useEffect } from "react";
 import { axiosClient } from "../../../axiosClient";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -70,6 +61,10 @@ const DoctorInfo = ({ route, navigation }) => {
             <Text style={styles.text}>{doctor.lastname}</Text>
           </View>
           <View style={styles.section}>
+            <Text style={styles.label}>Contacto:</Text>
+            <Text style={styles.text}>{doctor.contact_number}</Text>
+          </View>
+          <View style={styles.section}>
             <Text style={styles.label}>Email:</Text>
             <Text style={styles.text}>{doctor.email}</Text>
           </View>
@@ -77,6 +72,7 @@ const DoctorInfo = ({ route, navigation }) => {
             <Text style={styles.label}>Especialidad:</Text>
             <Text style={styles.text}>{doctor.speciality}</Text>
           </View>
+         
         </View>
 
         <View style={styles.card}>
