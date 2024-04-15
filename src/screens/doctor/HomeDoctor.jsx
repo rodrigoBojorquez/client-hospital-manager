@@ -4,6 +4,7 @@ import rodri from "../../../assets/rodri.png"
 import Icon from "react-native-vector-icons/Fontisto";
 import DoctorIcon from "../../../assets/images/caduceo.png";
 import { axiosClient } from '../../../axiosClient';
+import { useAppStore } from "../../stores/appStore.js";
 
 
 // COMPONENTS
@@ -13,6 +14,7 @@ import Appointment from "./components/appoiments.jsx";
 const HomeDoctor = () => {
 
   const [data, setData] = useState([]);
+  const profileData = useAppStore(store => store.profileData);
 
   useEffect(() => {
     const getDataUser = async () => {
@@ -74,7 +76,7 @@ const HomeDoctor = () => {
                 Bienvenido, Dr
               </Text>
               <Text style={{ fontSize: 23, fontWeight: 550 }}>
-                {getDataUser.username} {getDataUser.lastname}
+                {profileData.userName}
               </Text>
             </View>
           </View>
