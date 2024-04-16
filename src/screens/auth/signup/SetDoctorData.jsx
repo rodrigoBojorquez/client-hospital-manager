@@ -30,7 +30,7 @@ const SetDoctorData = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#64CCC5" }}>
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <GoBackButton 
               onPress={() => navigation.goBack()}
             />
@@ -94,7 +94,7 @@ const SetDoctorData = ({ navigation }) => {
             <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
                 <Text style={styles.submitText}>Siguiente</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     </SafeAreaView>
   )
 }

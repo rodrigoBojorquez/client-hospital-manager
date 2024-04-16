@@ -69,7 +69,7 @@ const HomePatient = () => {
         <ScrollView style={tw`bg-white pt-8 h-full`}>
             <View style={tw`items-center bg-white`}>
                 <View style={tw`flex flex-row items-center bg-white justify-around`}>
-                    <View style={tw`flex  items-center`}>
+                    <View style={tw`flex items-center`}>
                         <Text style={tw`text-2xl font-bold text-[#858585]`}>Bienvenido,</Text>
                         <Text style={tw`text-2xl font-bold`}>{userInfo ? userInfo.username : 'Nombre de Usuario'}</Text>
                     </View>

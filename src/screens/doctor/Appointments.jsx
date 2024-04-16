@@ -6,22 +6,25 @@ import dayjs from 'dayjs';
 import { Feather } from '@expo/vector-icons';
 
 const Appointments = () => {
+  const profileData = useAppStore((store) => store.profileData);
   const [appointments, setAppointments] = useState([]);
 
-  const profileData = useAppStore((store) => store.profileData);
-
- 
   useEffect(() => {
-    const getAppointments = async () => {
+    const getAppointmentsData = async () => {
       try {
-        const response = await axiosClient.get(`/appointment/doctor/${profileData.id}`);
+        const patientId = profileData.id;
+        const response = await axiosClient.get(
+          `/appointment/doctor/${patientId}?patient_id=${patientId}`
+        );
         setAppointments(response.data.response ?? []);
+        console.log(response.data.response); // Imprimir los datos de las citas
       } catch (err) {
-        Alert.alert('Oops!', 'Hubo un error al obtener la información');
+        console.log(err);
+        Alert.alert("Oops!", "Hubo un error al obtener información");
       }
     };
-    getAppointments();
-  }, [profileData.id]);
+    getAppointmentsData();
+  }, []);
 
   const renderAppointment = ({ item }) => {
     const formattedDate = dayjs(item.date).format('DD/MM/YYYY HH:mm');

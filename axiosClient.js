@@ -8,6 +8,6 @@ export const axiosClient = axios.create({
     // baseURL: "http://192.168.1.244:8000/",
    // baseURL: "http://10.0.1.32:8000/",
     // ALEXIS
-    baseURL: "http://192.168.3.219:8000/",
+    baseURL: "http://192.168.3.17:8000/",
     timeout: 5000
 })

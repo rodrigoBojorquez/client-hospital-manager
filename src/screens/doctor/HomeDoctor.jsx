@@ -1,156 +1,127 @@
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import { ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import rodri from "../../../assets/rodri.png"
-import Icon from "react-native-vector-icons/Fontisto";
 import DoctorIcon from "../../../assets/images/caduceo.png";
-import { axiosClient } from '../../../axiosClient';
+import { axiosClient } from "../../../axiosClient";
 import { useAppStore } from "../../stores/appStore.js";
-
+import tw from "twrnc"; // Importación de twrnc para Tailwind CSS
 
 // COMPONENTS
 import Appointment from "./components/appoiments.jsx";
 
-
-const HomeDoctor = () => {
-
+const HomeDoctor = ({ navigation }) => {
   const [data, setData] = useState([]);
-  const profileData = useAppStore(store => store.profileData);
+  const profileData = useAppStore((store) => store.profileData);
+  const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
-    const getDataUser = async () => {
+    const getAppointmentsData = async () => {
       try {
-        const response = await axiosClient.get(`/user/me`)
-        console.log(response)
-        setData(response.data.response ?? []);
+        const patientId = profileData.id;
+        const response = await axiosClient.get(
+          `/appointment/doctor/${patientId}?patient_id=${patientId}`
+        );
+        setAppointments(response.data.response ?? []);
+        console.log(response.data.response); // Imprimir los datos de las citas
       } catch (err) {
         console.log(err);
         Alert.alert("Oops!", "Hubo un error al obtener información");
       }
-    }
-    getDataUser()
-  }, [])
+    };
+    getAppointmentsData();
+  }, []);
 
 
-  const menusInfo = {
-    left: "Sin asignar",
-    right: "Sin asignar",
-  };
-
-  const nextAppointments = [
-    {
-      id: 1,
-      patient: "Juanito Perez",
-      description: "juanito viene a revicion medica anual",
-      hour: "15:00",
-    },
-    {
-      id: 2,
-      patient: "Alexis dolores",
-      description:
-        "alexis viene a cita con el  doctor por una lesion en la pierna izquierda",
-      hour: "18:30",
-    },
+  const frases = [
+    "El único modo de hacer un gran trabajo es amar lo que haces. (Steve Jobs)",
+    "Sé el cambio que quieres ver en el mundo. (Mahatma Gandhi)",
+    "El poder de la imaginación nos hace infinitos. (John Muir)",
+    "Los sueños se realizan cuando mantienes el compromiso con ellos.",
   ];
 
+  const [fraseSeleccionada, setFraseSeleccionada] = useState(
+    "Todo lo que siempre has querido está al otro lado del miedo. (George Addair)"
+  );
+
+  const obtenerFraseAleatoria = () => {
+    const indiceAleatorio = Math.floor(Math.random() * frases.length);
+    setFraseSeleccionada(frases[indiceAleatorio]);
+  };
+
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "space-between" }} showsVerticalScrollIndicator={false}>
-      <View
-        style={{
-          paddingVertical: 25,
-          paddingHorizontal: 15,
-          flex: 1,
-          backgroundColor: "white",
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Image source={rodri} style={{ height: 70, width: 70 }} />
-            <View style={{ marginLeft: 10 }}>
-              <Text style={{ color: "#858585", fontSize: 20, marginBottom: 5 }}>
+    <ScrollView style={tw`bg-white pt-2 h-full`}>
+      <View style={tw`p-4 flex-1`}>
+        <View style={tw`flex-row items-center justify-center`}>
+          <View style={tw`flex-row items-center`}>
+            <View style={tw`ml-4 items-center`}>
+              <Text style={tw` text-2xl font-bold text-[#858585]`}>
                 Bienvenido, Dr
               </Text>
-              <Text style={{ fontSize: 23, fontWeight: 550 }}>
-                {profileData.userName}
-              </Text>
+              <Text style={tw`text-2xl font-bold`}>{profileData.userName}</Text>
             </View>
           </View>
-
-          <TouchableOpacity>
-            <Icon name="bell" size={30} color="black" />
-          </TouchableOpacity>
         </View>
 
-        <Text
-          style={{
-            color: "#11AEBD",
-            fontSize: 25,
-            fontWeight: 550,
-            marginTop: 30,
-          }}
-        >
+        <Text style={tw`text-[#11AEBD] text-left text-2xl font-bold mt-6`}>
           Cita del día
         </Text>
 
         {/* GRID DE HOME */}
-        <View style={{ marginTop: 20 }}>
+        <View style={tw`mt-4`}>
           <View
-            style={{
-              backgroundColor: "#11BD92",
-              borderRadius: 10,
-              color: "white",
-              alignItems: "center",
-              justifyContent: "space-around",
-              padding: 20,
-              flexDirection: "row"
-            }}
+            style={tw`bg-[#11BD92] rounded-lg flex-row items-center justify-between p-4`}
           >
-            <Text style={{ width: "60%", color: "white", fontSize: 17, fontWeight: 600 }}>
-              La medicina es el arte de acompañar a lar personas en su camino
-              hacia la salud
+            <Text style={tw`text-white text-lg font-bold w-3/5`}>
+              {fraseSeleccionada}
             </Text>
-            <Image
-              source={DoctorIcon}
-              style={{ height: 100, width: 100, tintColor: "black" }}
-            />
+            <TouchableOpacity onPress={obtenerFraseAleatoria}>
+              <Image source={DoctorIcon} style={tw`h-24 w-24`} />
+            </TouchableOpacity>
           </View>
-          <View
-            style={{
-              marginTop: 10,
-              flexDirection: "row",
-              gap: 15,
-              width: "100%",
-              justifyContent: "space-between",
-            }}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('Citas')}
+           style={tw`mt-4 flex-row gap-4 justify-between`}>
             <View
-              style={{ flex: 1, backgroundColor: "#4EACEC", borderRadius: 10, height: 130, justifyContent: "center", alignItems: "center" }}
+              style={tw`flex-1 bg-[#4EACEC] rounded-lg h-32 justify-center items-center`}
             >
-              <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
-                {menusInfo.left}
-              </Text>
+              <Text style={tw`text-white text-lg font-bold`}>Citas </Text>
             </View>
-            <View
-              style={{ flex: 1, backgroundColor: "#70D7BD", borderRadius: 10, justifyContent: "center", alignItems: "center" }}
+            <TouchableOpacity onPress={() => navigation.navigate('Configuracion')}
+              style={tw`flex-1 bg-[#70D7BD] rounded-lg h-32 justify-center items-center`}
             >
-              <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
-                {menusInfo.right}
+              <Text style={tw`text-white text-lg font-bold`}>
+                Configuracion
               </Text>
-            </View>
-          </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
         </View>
 
-        <Text style={{ marginTop: 30, color: "#11AEBD", fontWeight: 500, fontSize: 25 }}>Próximas citas</Text>
+        <Text style={tw`mt-6 text-[#11AEBD] font-bold text-2xl`}>
+          Próximas citas
+        </Text>
 
-        <View style={{ marginTop: 15 }}>
-          {nextAppointments?.map((appoinment) => (
-            <Appointment data={appoinment} key={appoinment.id} />
-          ))}
+        <View style={tw`mt-4`}>
+          {appointments
+            .sort((a, b) => new Date(a.date) - new Date(b.date)) // Ordenar las citas por fecha
+            .slice(0, 3) // Tomar solo las dos primeras citas
+            .map((appointment) => (
+              <View
+                key={appointment._id}
+                style={tw`flex-1 bg-[#D9D9D9] mb-4 rounded-lg h-32 justify-center`}
+              >
+                <View>
+                  <Text style={tw` ml-4 font-bold text-lg `}>
+                    Descripcion de la cita:
+                  </Text>
+                  <Text style={tw` ml-4 font-semibold text-lg `}>
+                    {appointment.commentary}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={tw` ml-4 font-bold text-lg `}>
+                    {new Date(appointment.date).toLocaleTimeString()}
+                  </Text>
+                </View>
+              </View>
+            ))}
         </View>
       </View>
     </ScrollView>
